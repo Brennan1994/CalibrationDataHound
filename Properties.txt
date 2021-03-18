@@ -1,0 +1,14 @@
+8047500,Clear Fk Trinity Rv at Ft Worth TX,532.91,0.04
+8048000,W Fk Trinity Rv at Ft Worth TX,519.24,0.04
+8048543,W Fk Trinity Rv at Beach St Ft WorthTX,478.7,0.04
+8049300,W Fk Trinity Rv at Greenbelt Rd Fort Worth TX,400,0.04
+8049500,W Fk Trinity Rv at Grand Prairie TX,405.30,0
+8050100,Mountain Ck at Grand Prairie TX,401.31,0.04
+8053000,Elm Fk Trinity Rv nr Lewisville TX,432.39,0.04
+8055000,Denton Ck nr Grapevine TX,439.11,0
+8055500,Elm Fk Trinity Rv nr Carrollton TX,431.40,0.04
+8055560,Elm Fk Trinity Rv at Spur 348 Irving TX,400.00,0.04
+8056000,Elm Fk Trinity Rv at Frasier Dam Dallas TX,0,0
+8057000,Trinity Rv at Dallas TX,368.02,0.04
+8057410,Trinity Rv bl Dallas TX,365.89,0.04
+8062500,Trinity Rv nr Rosser TX,297.65,0.04
