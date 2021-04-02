@@ -18,11 +18,20 @@ namespace CalibrationDataHound
         public double conversionToNAVD88 { get; set; }
         public Line ratingCurveRaw { get; set; }
         public Line ratingCurve { get; set; }
+        public bool isNAVD88 { get; set; }
+        public Point Location { get; set; }
         public string USGSRatingCurveURL
         {
             get
             {
-                return "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=" + gageNumber;
+                return "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=0" + gageNumber;
+            }
+        }
+        public string USGSSiteInformationDownloadURL
+        {
+            get
+            {
+                return "https://waterservices.usgs.gov/nwis/site/?format=rdb&sites=0" + gageNumber + "&siteStatus=all";
             }
         }
 
@@ -37,6 +46,14 @@ namespace CalibrationDataHound
         }
 
         public void DownloadRatingCurve(string USGS_url_string, string filePathToSave)
+        {
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(USGS_url_string, filePathToSave);
+            }
+        }
+
+        public void DownloadSiteInformation(string USGS_url_string, string filePathToSave)
         {
             using (var client = new WebClient())
             {
@@ -69,6 +86,51 @@ namespace CalibrationDataHound
                 return true;
             }
         }
+        public bool ParseGageInfoTextfile(string filepath)
+        {
+            string[] lines = System.IO.File.ReadAllLines(filepath);
+            string seperator = "\t";
+            int headerIndex = int.MaxValue;
+            int datumIndex = int.MaxValue;
+            int datumTypeIndex = int.MaxValue;
+            int LatIndex = int.MaxValue;
+            int LonIndex = int.MaxValue;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains('#'))
+                {
+                    if (!lines[i + 1].Contains('#'))
+                    {
+                        headerIndex = i + 1;
+                    }
+                    
+                }
+                if (i == headerIndex)
+                {
+                    string[] splitHeaders = lines[i].Split(seperator);
+                    for (int ii = 0; ii < splitHeaders.Length; ii++)
+                    {
+                        if (splitHeaders[ii] == "dec_long_va") { LonIndex = ii; }
+                        if (splitHeaders[ii] == "dec_lat_va") { LatIndex = ii; }
+                        if (splitHeaders[ii] == "alt_va") { datumIndex = ii; }
+                        if (splitHeaders[ii] == "alt_datum_cd") { datumTypeIndex = ii; }
+                    }
+                }
+                if (i == headerIndex + 1) { continue; }
+                else
+                {
+                    string[] cutLine = lines[i].Split(seperator);
+                    this.datum = Double.Parse(cutLine[datumIndex]);
+                    double lat = Double.Parse(cutLine[LatIndex]);
+                    double lon = Double.Parse(cutLine[LonIndex]);
+                    this.Location = new Point(lat, lon);
+                    if (cutLine[datumTypeIndex].Contains("NAVD88")) { this.isNAVD88 = true; }
+                    else { this.isNAVD88 = false; }
+                }
+            }
+            return true;
+        }
+
 
         public void ConvertToNAVD88()
         {
