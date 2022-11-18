@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using CalibrationDataHound;
+using System.IO;
 
 namespace CalibrationDataHoundTest
 {
@@ -9,7 +10,8 @@ namespace CalibrationDataHoundTest
         public void PropertiesReadReadsProperties()
         {
             Properties prop = new Properties();
-            prop.read("C:\\Programs\\Git\\Repos\\CalibrationDataHound\\Properties.txt");
+            string relativePathToPropsFile = @"..\..\..\..\Properties.txt";
+            prop.read(relativePathToPropsFile);
         }
     }
 }
