@@ -15,7 +15,7 @@ namespace CalibrationDataHoundTest
             Console.WriteLine("Begin");
             Properties props = new Properties();
             string currentDirectory = Directory.GetCurrentDirectory();
-            string propertiesFileName = currentDirectory + "\\properties.txt";
+            string propertiesFileName = @"..\..\..\..\PropertiesGreenbrier.txt";
             string USGSRatingCurveDownloadURL = "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=0";
             props.read(propertiesFileName);
             bool dataExists;
