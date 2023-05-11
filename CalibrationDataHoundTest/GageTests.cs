@@ -6,18 +6,18 @@ namespace CalibrationDataHoundTest
 {
     public class Gage_Tests
     {
-        private static string name = "Sabana Rv nr De Leon, TX";
-        private static int gagenumber = 08099300;
-        private static float datum = 234;
-        private static float convert2NavD88 = .04f;
-        private static string downloadFilePath = "C:\\Temp\\" + gagenumber.ToString() + ".csv";
-        private static string USGSUrl = "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=08099300";
-        Gage testGage = new Gage(name, gagenumber, datum, convert2NavD88);
+        private static readonly string name = "Sabana Rv nr De Leon, TX";
+        private static readonly int gagenumber = 08099300;
+        private static readonly float datum = 234;
+        private static readonly float convert2NavD88 = .04f;
+        private static readonly string downloadFilePath = "C:\\Temp\\" + gagenumber.ToString() + ".csv";
+        private static readonly string USGSUrl = "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=08099300";
+        readonly Gage testGage = new(name, gagenumber, datum, convert2NavD88);
         
         [Test]
         public void DownloadRatingCurveReturnsRatingCurve()
         {
-            testGage.DownloadRatingCurve(USGSUrl, downloadFilePath);
+            Gage.DownloadRatingCurve(USGSUrl, downloadFilePath);
             Assert.IsTrue(File.Exists(downloadFilePath));
         }
 
@@ -25,7 +25,7 @@ namespace CalibrationDataHoundTest
         public void ParseRatingCurveReturnsRatingCurve()
         {
             testGage.ParseRatingCurveTextfile(downloadFilePath);
-            Assert.IsTrue(testGage.ratingCurveRaw.getVerticesCount() > 0);
+            Assert.IsTrue(testGage.RatingCurveRaw.PointsList.Count > 0);
         }
         [Test]
         public void WriteToCSVcreatesACSV()

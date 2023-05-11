@@ -8,16 +8,11 @@ namespace CalibrationDataHoundTest
 {
     class PointTest
     {
-
-        Point pt0_0 = new Point(0, 0);
-
-        Point pt1_1 = new Point(1, 1);
-
-        Point pt2_4 = new Point(2, 4);
-
-        Point pt100_0 = new Point(100, 0);
-
-        Point pt50_neg100 = new Point(50, -100);
+        readonly Point pt0_0 = new(0, 0);
+        readonly Point pt1_1 = new(1, 1);
+        readonly Point pt2_4 = new(2, 4);
+        readonly Point pt100_0 = new(100, 0);
+        readonly Point pt50_neg100 = new(50, -100);
 
         [Test()]
         public void perpendicularDistanceShouldCalcCorrectOnSlopeLine()

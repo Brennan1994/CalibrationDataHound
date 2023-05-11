@@ -9,7 +9,7 @@ namespace CalibrationDataHoundTest
         [Test]
         public void PropertiesReadReadsProperties()
         {
-            Properties prop = new Properties();
+            Properties prop = new();
             string relativePathToPropsFile = @"..\..\..\..\Properties.txt";
             prop.read(relativePathToPropsFile);
         }

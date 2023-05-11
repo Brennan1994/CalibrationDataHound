@@ -12,26 +12,26 @@ namespace CalibrationDataHound
 {
     public class Gage
     {
-        public double datum { get; set; }
-        public int gageNumber { get; set; }
-        public string name { get; set; }
-        public double conversionToNAVD88 { get; set; }
-        public Line ratingCurveRaw { get; set; }
-        public Line ratingCurve { get; set; }
-        public bool isNAVD88 { get; set; }
+        public double Datum { get; set; }
+        public int GageNumber { get; set; }
+        public string Name { get; set; }
+        public double ConversionToNAVD88 { get; set; }
+        public Line RatingCurveRaw { get; set; }
+        public Line RatingCurve { get; set; }
+        public bool IsNAVD88 { get; set; }
         public Point Location { get; set; }
         public string USGSRatingCurveURL
         {
             get
             {
-                return "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=0" + gageNumber;
+                return "https://waterdata.usgs.gov/nwisweb/get_ratings?file_type=exsa&site_no=0" + GageNumber;
             }
         }
         public string USGSSiteInformationDownloadURL
         {
             get
             {
-                return "https://waterservices.usgs.gov/nwis/site/?format=rdb&sites=0" + gageNumber + "&siteStatus=all";
+                return "https://waterservices.usgs.gov/nwis/site/?format=rdb&sites=0" + GageNumber + "&siteStatus=all";
             }
         }
 
@@ -39,32 +39,28 @@ namespace CalibrationDataHound
 
         public Gage (string name, int gageNumber, float datum, float conversionToNAVD88)
         {
-            this.name = name;
-            this.gageNumber = gageNumber;
-            this.datum = datum;
-            this.conversionToNAVD88 = conversionToNAVD88;
+            Name = name;
+            GageNumber = gageNumber;
+            Datum = datum;
+            ConversionToNAVD88 = conversionToNAVD88;
         }
 
-        public void DownloadRatingCurve(string USGS_url_string, string filePathToSave)
+        public static void DownloadRatingCurve(string USGS_url_string, string filePathToSave)
         {
-            using (var client = new WebClient())
-            {
-                client.DownloadFile(USGS_url_string, filePathToSave);
-            }
+            using var client = new WebClient();
+            client.DownloadFile(USGS_url_string, filePathToSave);
         }
 
-        public void DownloadSiteInformation(string USGS_url_string, string filePathToSave)
+        public static void DownloadSiteInformation(string USGS_url_string, string filePathToSave)
         {
-            using (var client = new WebClient())
-            {
-                client.DownloadFile(USGS_url_string, filePathToSave);
-            }
+            using var client = new WebClient();
+            client.DownloadFile(USGS_url_string, filePathToSave);
         }
 
         public bool ParseRatingCurveTextfile(string filepath)
         {
-            this.ratingCurveRaw = new Line();
-            string[] lines = System.IO.File.ReadAllLines(filepath);
+            RatingCurveRaw = new Line();
+            string[] lines = File.ReadAllLines(filepath);
             string seperator = "\t";
             foreach(string line in lines)
             {
@@ -73,11 +69,11 @@ namespace CalibrationDataHound
                 {
                     double stage = number;
                     double flow = double.Parse(splitLine[2]);
-                    Point myPoint = new Point(stage, flow);
-                    ratingCurveRaw.AddPoint(myPoint);
+                    Point myPoint = new(stage, flow);
+                    RatingCurveRaw.AddPoint(myPoint);
                 }
             }
-            if (ratingCurveRaw.getVerticesCount()<1)
+            if (RatingCurveRaw.PointsList.Count<1)
             {
                 return false;
             }
@@ -120,12 +116,12 @@ namespace CalibrationDataHound
                 else
                 {
                     string[] cutLine = lines[i].Split(seperator);
-                    this.datum = Double.Parse(cutLine[datumIndex]);
-                    double lat = Double.Parse(cutLine[LatIndex]);
-                    double lon = Double.Parse(cutLine[LonIndex]);
-                    this.Location = new Point(lat, lon);
-                    if (cutLine[datumTypeIndex].Contains("NAVD88")) { this.isNAVD88 = true; }
-                    else { this.isNAVD88 = false; }
+                    Datum = double.Parse(cutLine[datumIndex]);
+                    double lat = double.Parse(cutLine[LatIndex]);
+                    double lon = double.Parse(cutLine[LonIndex]);
+                    Location = new Point(lat, lon);
+                    if (cutLine[datumTypeIndex].Contains("NAVD88")) { IsNAVD88 = true; }
+                    else { IsNAVD88 = false; }
                 }
             }
             return true;
@@ -134,18 +130,18 @@ namespace CalibrationDataHound
 
         public void ConvertToNAVD88()
         {
-            this.ratingCurve = new Line();
-            foreach(Point point in ratingCurveRaw.getPointsList())
+            RatingCurve = new Line();
+            foreach(Point point in RatingCurveRaw.PointsList)
             {
-                double convertedStage = point.x + datum + conversionToNAVD88;
-                Point myPoint = new Point(convertedStage, point.y);
-                ratingCurve.AddPoint(myPoint);
+                double convertedStage = point.X + Datum + ConversionToNAVD88;
+                Point myPoint = new(convertedStage, point.Y);
+                RatingCurve.AddPoint(myPoint);
             }
         }
 
-        public void thinRatingCurve()
+        public void ThinRatingCurve()
         {
-            ratingCurve = LineThinner.DouglasPeukerReduction(ratingCurve, .1);
+            RatingCurve = LineThinner.DouglasPeukerReduction(RatingCurve, .1);
         }
 
 
@@ -154,7 +150,7 @@ namespace CalibrationDataHound
 
             using var writer = new StreamWriter(filepath);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            foreach (var record in ratingCurve.getPointsList())
+            foreach (var record in RatingCurve.PointsList)
             {
                 csv.WriteRecord(record);
                 csv.NextRecord();

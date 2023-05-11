@@ -1,106 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace CalibrationDataHound
+namespace CalibrationDataHound;
+
+public class Line
 {
-    public class Line
+    public List<Point> PointsList { get; set; }
+
+    public Point GetPoint(int index)
     {
-
-        // Variables
-        private List<Point> _pointsList;
-
-        // Getters
-        public List<Point> getPointsList()
-        {
-            return this._pointsList;
-        }
-
-        public Point getPoint(int index)
-        {
-            return this._pointsList[index];
-        }
-
-        public int getVerticesCount()
-        {
-            return this._pointsList.Count;
-        }
-
-        public double getIntegratedArea()
-        {
-            return this.MidpointIntegral();
-        }
-
-        public double[] getXords()
-        {
-            return this.GetOrdArrayFromLineOrdPairs(0);
-        }
-
-        public double[] getYords()
-        {
-            return this.GetOrdArrayFromLineOrdPairs(1);
-        }
-
-        // Constructor
-        public Line()
-        {
-            this._pointsList = new List<Point>();
-        }
-
-        public Line(double[] x, double[] y)
-        {
-            this._pointsList = new List<Point>();
-            for (int i = 0; (i < x.Length); i++)
-            {
-                Point pt = new Point(x[i], y[i]);
-                this._pointsList.Add(pt);
-            }
-
-        }
-
-        // Methods
-        public void RemovePoint(int index)
-        {
-            this._pointsList.RemoveAt(index);
-        }
-
-        public void AddPoint(Point pnt)
-        {
-            this._pointsList.Add(pnt);
-        }
-
-        private double MidpointIntegral()
-        {
-            // Returns integral of a line using midpoint rectangular integration
-            double area = 0;
-            for (int i = 0; (i < (_pointsList.Count - 1)); i++)
-            {
-                double tmpHeight = (_pointsList[i].y + _pointsList[(i + 1)].y) / 2;
-                double tmpWidth = (_pointsList[(i + 1)].x - _pointsList[i].x);
-                area += tmpHeight * tmpWidth;
-            }
-
-            return area;
-        }
-
-        private double[] GetOrdArrayFromLineOrdPairs(int xOrYIndex)
-        {
-            List<Point> pointList = this._pointsList;
-            double[] Ords = new double[pointList.Count];
-            for (int i = 0; (i < pointList.Count); i++)
-            {
-                if ((xOrYIndex == 0))
-                {
-                    Ords[i] = pointList[i].x;
-                }
-                else
-                {
-                    Ords[i] = pointList[i].y;
-                }
-
-            }
-
-            return Ords;
-        }
+        return PointsList[index];
     }
+
+    public double[] GetXords()
+    {
+        return GetOrdArrayFromLineOrdPairs(0);
+    }
+
+    public double[] GetYords()
+    {
+        return GetOrdArrayFromLineOrdPairs(1);
+    }
+
+    #region Constructors
+    public Line()
+    {
+        PointsList = new List<Point>();
+    }
+
+    public Line(double[] x, double[] y)
+    {
+        PointsList = new List<Point>();
+        for (int i = 0; (i < x.Length); i++)
+        {
+            Point pt = new(x[i], y[i]);
+            PointsList.Add(pt);
+        }
+
+    }
+    #endregion
+
+    #region Methods
+    public void RemovePoint(int index)
+    {
+        PointsList.RemoveAt(index);
+    }
+    public void AddPoint(Point pnt)
+    {
+        PointsList.Add(pnt);
+    }
+    public double GetMidpointIntegral()
+    {
+        // Returns integral of a line using midpoint rectangular integration
+        double area = 0;
+        for (int i = 0; (i < (PointsList.Count - 1)); i++)
+        {
+            double tmpHeight = (PointsList[i].Y + PointsList[(i + 1)].Y) / 2;
+            double tmpWidth = (PointsList[(i + 1)].X - PointsList[i].X);
+            area += tmpHeight * tmpWidth;
+        }
+
+        return area;
+    }
+    private double[] GetOrdArrayFromLineOrdPairs(int xOrYIndex)
+    {
+        List<Point> pointList = PointsList;
+        double[] Ords = new double[pointList.Count];
+        for (int i = 0; (i < pointList.Count); i++)
+        {
+            if ((xOrYIndex == 0))
+            {
+                Ords[i] = pointList[i].X;
+            }
+            else
+            {
+                Ords[i] = pointList[i].Y;
+            }
+
+        }
+        return Ords;
+    }
+    #endregion
 }

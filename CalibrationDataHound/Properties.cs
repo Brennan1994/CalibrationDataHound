@@ -4,7 +4,7 @@ namespace CalibrationDataHound
 {
     public class Properties
     {
-        public List<Gage> MyGages = new List<Gage>();
+        public List<Gage> MyGages = new();
         
         public void read(string filepath)
         {
@@ -13,7 +13,7 @@ namespace CalibrationDataHound
             foreach (string line in lines)
             {
                 string[] splitLine = line.Split(seperator);
-                Gage MyGage = new Gage(splitLine[1], int.Parse(splitLine[0]), float.Parse(splitLine[2]), float.Parse(splitLine[3]));
+                Gage MyGage = new(splitLine[1], int.Parse(splitLine[0]), float.Parse(splitLine[2]), float.Parse(splitLine[3]));
                 MyGages.Add(MyGage);
             }
         }
